@@ -1,4 +1,5 @@
 using DemoMvc.Models;
+using DemoMvc.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -9,5 +10,8 @@ public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : ba
 
 }
     public DbSet<Person>Person{get;set;}
+ 
+    public DbSet<Customer>Customer{get;set;}
+    public DbSet<Employee>Employee{get;set;}
     }
 }

@@ -1,4 +1,3 @@
-using System.Net.Mime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,91 +6,89 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DemoMvc.Data;
-using DemoMvc.Models;
+using DemoMvc.Models.Entities;
 
 namespace DemoMvc.Controllers
 {
-    public class PersonController : Controller
+    public class CustomerController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public PersonController(ApplicationDbContext context)
+        public CustomerController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Person
+        // GET: Customer
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Person.ToListAsync());
+            return View(await _context.Customer.ToListAsync());
         }
 
-        // GET: Person/Details/5
-        // (xem thông tin chi tiết của bản ghi)
-        public async Task<IActionResult> Details(int? id)
+        // GET: Customer/Details/5
+        public async Task<IActionResult> Details(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            // trả về dữ liệu (var)
-            var person = await _context.Person
-                .FirstOrDefaultAsync(m => m.PersonId == id);
-            // lưu vào trong cơ sở
-            if (person == null)
+
+            var customer = await _context.Customer
+                .FirstOrDefaultAsync(m => m.CustomerID == id);
+            if (customer == null)
             {
                 return NotFound();
             }
 
-            return View(person);
+            return View(customer);
         }
 
-        // GET: Person/Create
+        // GET: Customer/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Person/Create
+        // POST: Customer/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PersonId,Fullname,Address")] Person person)
+        public async Task<IActionResult> Create([Bind("CustomerID,HoTen,QueQuan")] Customer customer)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(person);
+                _context.Add(customer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(person);
+            return View(customer);
         }
 
-        // GET: Person/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: Customer/Edit/5
+        public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var person = await _context.Person.FindAsync(id);
-            if (person == null)
+            var customer = await _context.Customer.FindAsync(id);
+            if (customer == null)
             {
                 return NotFound();
             }
-            return View(person);
+            return View(customer);
         }
 
-        // POST: Person/Edit/5
+        // POST: Customer/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PersonId,Fullname,Address")] Person person)
+        public async Task<IActionResult> Edit(string id, [Bind("CustomerID,HoTen,QueQuan")] Customer customer)
         {
-            if (id != person.PersonId)
+            if (id != customer.CustomerID)
             {
                 return NotFound();
             }
@@ -100,12 +97,12 @@ namespace DemoMvc.Controllers
             {
                 try
                 {
-                    _context.Update(person);
+                    _context.Update(customer);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PersonExists(person.PersonId))
+                    if (!CustomerExists(customer.CustomerID))
                     {
                         return NotFound();
                     }
@@ -116,45 +113,45 @@ namespace DemoMvc.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(person);
+            return View(customer);
         }
 
-        // GET: Person/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: Customer/Delete/5
+        public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var person = await _context.Person
-                .FirstOrDefaultAsync(m => m.PersonId == id);
-            if (person == null)
+            var customer = await _context.Customer
+                .FirstOrDefaultAsync(m => m.CustomerID == id);
+            if (customer == null)
             {
                 return NotFound();
             }
 
-            return View(person);
+            return View(customer);
         }
 
-        // POST: Person/Delete/5
+        // POST: Customer/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var person = await _context.Person.FindAsync(id);
-            if (person != null)
+            var customer = await _context.Customer.FindAsync(id);
+            if (customer != null)
             {
-                _context.Person.Remove(person);
+                _context.Customer.Remove(customer);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PersonExists(int id) // kiểm tra xem nó có tồn tại bản ghi nào
+        private bool CustomerExists(string id)
         {
-            return _context.Person.Any(e => e.PersonId == id);
+            return _context.Customer.Any(e => e.CustomerID == id);
         }
     }
 }
